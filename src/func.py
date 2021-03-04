@@ -84,3 +84,45 @@ def sudoku_cut_frame (namefile):
 
     cropped = sudoku[h1:h2, w1:w2]
     return cropped 
+
+
+def sudoku_split_81(figure):     
+    h = figure.shape[0] // 9
+    w = figure.shape[1] // 9
+    subpics = []
+    w_i = 1
+    w_f = 1
+    h_i = 1
+    h_f = 1
+    for i in range(9):
+        h_f += h
+        for j in range(9):
+            w_f += w
+            cropped = figure[h_i:h_f, w_i:w_f]
+            #Reduce the frame of each square:
+            h_num = cropped.shape[0]
+            h_var = (h_num*10) // 100
+            w_num = cropped.shape[1]
+            w_var = (w_num*10) // 100
+            reduced = cropped[h_var:(h-h_var), w_var:(w-w_var)]
+            subpics.append(reduced)
+            w_i += w
+        h_i += h
+        w_i = 1
+        w_f = 1
+    return subpics
+
+
+def change_contrast (image):
+    a = 1.5 # 1.0-3.0
+    b = 0 # 0-100
+    adjusted = cv2.convertScaleAbs(image, alpha=a, beta=b)
+    return adjusted
+
+
+def isthereanumberornot (num):
+    graynum = cv2.cvtColor(num, cv2.COLOR_BGR2GRAY)
+    long = graynum.shape[0]*graynum.shape[1]
+    graynum = graynum.reshape((long))
+    average_color = sum(graynum)/long
+    return average_color
