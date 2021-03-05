@@ -41,7 +41,8 @@ def crop_and_reshape_numbers (image):
         mid = reduced.shape[1] // 2
         croped = reduced[0:28, (mid-14):(mid+14)]
     else:
-        croped = imutils.resize(image, height=28)
+        reduced = imutils.resize(image, height=29)
+        croped = reduced[0:28, 0:28]
     return cv2.bitwise_not(croped)
 
 
@@ -101,9 +102,9 @@ def sudoku_split_81(figure):
             cropped = figure[h_i:h_f, w_i:w_f]
             #Reduce the frame of each square:
             h_num = cropped.shape[0]
-            h_var = (h_num*10) // 100
+            h_var = (h_num*11) // 100
             w_num = cropped.shape[1]
-            w_var = (w_num*10) // 100
+            w_var = (w_num*11) // 100
             reduced = cropped[h_var:(h-h_var), w_var:(w-w_var)]
             subpics.append(reduced)
             w_i += w
@@ -120,9 +121,22 @@ def change_contrast (image):
     return adjusted
 
 
-def isthereanumberornot (num):
+def average_pixel_color (num):
     graynum = cv2.cvtColor(num, cv2.COLOR_BGR2GRAY)
     long = graynum.shape[0]*graynum.shape[1]
     graynum = graynum.reshape((long))
     average_color = sum(graynum)/long
     return average_color
+
+
+def number_or_not(sudolist):
+    numnot = []
+    for square in sudolist:   
+        contrast = change_contrast(square)
+        cut = crop_and_reshape_numbers (contrast)
+        scale = average_pixel_color(cut)
+        if scale < 5:
+            numnot.append(0)
+        else:
+            numnot.append(1)
+    return numnot
