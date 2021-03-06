@@ -184,3 +184,35 @@ def from_pic_to_numbers(sudolist):
             numeromodificado.append(blur)
             
     return numnot, probabilidades, numeromodificado
+
+
+def get_rows_cols_quads(sudokulist):
+    rows = [sudokulist[(i*9):(i*9+9)] for i in range(9)]
+    
+    columns = [l[i::9] for i in range(9)]    
+    
+    triplets = (np.array_split(sudokulist, 27))
+    quadrants = []
+    counter = 0
+    while counter < 26:
+        for i in range(3):
+            cuad = np.concatenate((triplets[counter+i], triplets[counter+i+3], triplets[counter+i+6]))
+            cuad = cuad.tolist()
+            quadrants.append(cuad)
+        counter+=9
+        
+    return rows, columns, quadrants
+
+
+def sudoku_proofreader (rows, cols, quads):
+    OK = True
+    for f in rows:
+        if len(set(f)) != 9:
+            OK = False
+    for c in cols:
+        if len(set(c)) != 9:
+            OK = False
+    for q in quads:
+        if len(set(q)) != 9:
+            OK = False
+    return OK
