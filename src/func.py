@@ -166,8 +166,8 @@ def from_pic_to_numbers(sudolist):
             numnot.append(0)
             probabilidades.append(0)
             numeromodificado.append(0)
-        else:
-            
+
+        else:           
             #kernel = np.ones((1,1), np.uint8) 
             #img_erosion = cv2.erode(cut, kernel, iterations=2) 
             #img_dilation = cv2.dilate(cut, kernel, iterations=1)
@@ -186,11 +186,17 @@ def from_pic_to_numbers(sudolist):
     return numnot, probabilidades, numeromodificado
 
 
-def get_rows_cols_quads(sudokulist):
+def get_rows(sudokulist):
     rows = [sudokulist[(i*9):(i*9+9)] for i in range(9)]
+    return rows
+
+
+def get_cols(sudokulist):
+    columns = [sudokulist[i::9] for i in range(9)]    
+    return columns
     
-    columns = [l[i::9] for i in range(9)]    
-    
+
+def get_quads(sudokulist):
     triplets = (np.array_split(sudokulist, 27))
     quadrants = []
     counter = 0
@@ -199,12 +205,11 @@ def get_rows_cols_quads(sudokulist):
             cuad = np.concatenate((triplets[counter+i], triplets[counter+i+3], triplets[counter+i+6]))
             cuad = cuad.tolist()
             quadrants.append(cuad)
-        counter+=9
-        
-    return rows, columns, quadrants
+        counter+=9       
+    return quadrants
 
 
-def sudoku_proofreader (rows, cols, quads):
+def sudoku_proofreader(rows, cols, quads):
     OK = True
     for f in rows:
         if len(set(f)) != 9:
@@ -216,3 +221,25 @@ def sudoku_proofreader (rows, cols, quads):
         if len(set(q)) != 9:
             OK = False
     return OK
+
+
+def correct_or_not(rows, cols, quads):
+    if sudoku_proofreader(rows, cols, quads):
+        print("The answer is good, well done! ;)")
+    else:
+        print("Errors were made, good luck next time :(")
+       
+
+def plot_sudoku(list_numbers):
+    l = list_numbers
+    print(f"{l[0]} {l[1]} {l[2]} | {l[3]} {l[4]} {l[5]} | {l[6]} {l[7]} {l[8]}")
+    print(f"{l[9]} {l[10]} {l[11]} | {l[12]} {l[13]} {l[14]} | {l[15]} {l[16]} {l[17]}")
+    print(f"{l[18]} {l[19]} {l[20]} | {l[21]} {l[22]} {l[23]} | {l[24]} {l[25]} {l[26]}")
+    print("-"*21)
+    print(f"{l[27]} {l[28]} {l[29]} | {l[30]} {l[31]} {l[32]} | {l[33]} {l[34]} {l[35]}")
+    print(f"{l[36]} {l[37]} {l[38]} | {l[39]} {l[40]} {l[41]} | {l[42]} {l[43]} {l[44]}")
+    print(f"{l[45]} {l[46]} {l[47]} | {l[48]} {l[49]} {l[50]} | {l[51]} {l[52]} {l[53]}")
+    print("-"*21)
+    print(f"{l[54]} {l[55]} {l[56]} | {l[57]} {l[58]} {l[59]} | {l[60]} {l[61]} {l[62]}")
+    print(f"{l[63]} {l[64]} {l[65]} | {l[66]} {l[67]} {l[68]} | {l[69]} {l[70]} {l[71]}")
+    print(f"{l[72]} {l[73]} {l[74]} | {l[75]} {l[76]} {l[77]} | {l[78]} {l[79]} {l[80]}")
