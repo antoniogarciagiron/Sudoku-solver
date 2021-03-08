@@ -324,13 +324,13 @@ def sudoku_proofreader(rows, cols, quads):
     '''  
     OK = True
     for f in rows:
-        if len(set(f)) != 9:
+        if set(f) != {1, 2, 3, 4, 5, 6, 7, 8, 9}:
             OK = False
     for c in cols:
-        if len(set(c)) != 9:
+        if set(c) != {1, 2, 3, 4, 5, 6, 7, 8, 9}:
             OK = False
     for q in quads:
-        if len(set(q)) != 9:
+        if set(q) != {1, 2, 3, 4, 5, 6, 7, 8, 9}:
             OK = False
     return OK
 
