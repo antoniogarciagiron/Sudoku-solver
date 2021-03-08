@@ -276,6 +276,11 @@ def get_rows(sudokulist):
     return rows
 
 
+def get_rows_array(final_list):
+    row_list = np.reshape(final_list, (9, 9))
+    return row_list
+
+
 def get_cols(sudokulist):
     '''
     Takes the list with the 81 sudoku numbers (0 if empty positions) and returns a list with each column in a list
@@ -288,7 +293,18 @@ def get_cols(sudokulist):
     '''  
     columns = [sudokulist[i::9] for i in range(9)]    
     return columns
-    
+
+
+def get_cols_array(final_list):    
+    cols = np.reshape(final_list, (9, 9))
+    col_list = []
+    for i in range(9):
+        x = cols[:, [i]]
+        x = np.reshape(x, (1, 9))
+        col_list.append(x[0])
+    col_list = np.reshape(col_list, (9, 9))
+    return col_list
+
 
 def get_quads(sudokulist):
     '''
@@ -310,6 +326,19 @@ def get_quads(sudokulist):
             quadrants.append(cuad)
         counter+=9       
     return quadrants
+
+
+def get_quads_array(final_list):     
+    quads = np.reshape(final_list, (9, 9))
+    quad_list = []
+
+    for i in range(0, 9, 3):
+        for j in range(0, 9, 3):
+            quad = quads[np.ix_([i, i + 1,i + 2],[j, j + 1, j + 2])]
+            x = np.reshape(quad, (1, 9))
+            quad_list.append(x)
+    quad_list = np.reshape(quad_list, (9, 9))
+    return quad_list
 
 
 def sudoku_proofreader(rows, cols, quads):
