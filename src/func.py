@@ -276,8 +276,8 @@ def get_rows(sudokulist):
     return rows
 
 
-def get_rows_array(final_list):
-    row_list = np.reshape(final_list, (9, 9))
+def get_rows_array(indexnums):
+    row_list = np.reshape(indexnums, (9, 9, 2))
     return row_list
 
 
@@ -296,13 +296,12 @@ def get_cols(sudokulist):
 
 
 def get_cols_array(final_list):    
-    cols = np.reshape(final_list, (9, 9))
+    cols = np.reshape(final_list, (9, 9, 2))
     col_list = []
     for i in range(9):
         x = cols[:, [i]]
-        x = np.reshape(x, (1, 9))
-        col_list.append(x[0])
-    col_list = np.reshape(col_list, (9, 9))
+        col_list.append(x)
+    col_list = np.reshape(col_list, (9, 9, 2))
     return col_list
 
 
@@ -329,15 +328,15 @@ def get_quads(sudokulist):
 
 
 def get_quads_array(final_list):     
-    quads = np.reshape(final_list, (9, 9))
+    quads = np.reshape(final_list, (9, 9, 2))
     quad_list = []
 
     for i in range(0, 9, 3):
         for j in range(0, 9, 3):
             quad = quads[np.ix_([i, i + 1,i + 2],[j, j + 1, j + 2])]
-            x = np.reshape(quad, (1, 9))
+            x = np.reshape(quad, (2, 9))
             quad_list.append(x)
-    quad_list = np.reshape(quad_list, (9, 9))
+    quad_list = np.reshape(quad_list, (9, 9, 2))
     return quad_list
 
 
@@ -360,6 +359,20 @@ def sudoku_proofreader(rows, cols, quads):
             OK = False
     for q in quads:
         if set(q) != {1, 2, 3, 4, 5, 6, 7, 8, 9}:
+            OK = False
+    return OK
+
+
+def sudoku_proofreader_arr(rows, cols, quads): 
+    OK = True
+    for f in rows:
+        if set(f[:,[1][0]]) != {1, 2, 3, 4, 5, 6, 7, 8, 9}:
+            OK = False
+    for c in cols:
+        if set(f[:,[1][0]]) != {1, 2, 3, 4, 5, 6, 7, 8, 9}:
+            OK = False
+    for q in quads:
+        if set(f[:,[1][0]]) != {1, 2, 3, 4, 5, 6, 7, 8, 9}:
             OK = False
     return OK
 
@@ -402,3 +415,66 @@ def plot_sudoku(list_numbers):
     print(f"{l[54]} {l[55]} {l[56]} | {l[57]} {l[58]} {l[59]} | {l[60]} {l[61]} {l[62]}")
     print(f"{l[63]} {l[64]} {l[65]} | {l[66]} {l[67]} {l[68]} | {l[69]} {l[70]} {l[71]}")
     print(f"{l[72]} {l[73]} {l[74]} | {l[75]} {l[76]} {l[77]} | {l[78]} {l[79]} {l[80]}")
+
+
+def numbers_with_index(final_list):
+    indexnums = []
+    for num in range(81):
+        indexnums.append([num, final_list[num]])
+    return indexnums
+
+
+def solver(final_list):
+    indexnums = []
+    for num in range(81):
+        indexnums.append([num, final_list[num]])
+    cols = get_cols_array(indexnums)
+    rows = get_rows_array(indexnums)
+    quads = get_quads_array(indexnums)
+    index_zero_list = []  
+    counter_zero_list = []
+    for num in indexnums:
+        if num[1] == 0:
+            ind = num[0]
+            index_zero_list.append(ind)
+    for num in range(81):
+        counter_zero_list.append(0)
+    while not sudoku_proofreader_arr(rows, cols, quads):
+        write_bool = True
+        for ind in index_zero_list:
+            if (indexnums[ind][1] == 0) and (write_bool == True):  
+                counter = counter_zero_list[ind]
+                used_values = []
+                for i in rows:
+                    if ind in i[:,[0][0]]:
+                        x = i[:,[1][0]]
+                        x = x.tolist()
+                        used_values += x
+                for i in cols:
+                    if ind in i[:,[0][0]]:
+                        x = i[:,[1][0]]
+                        x = x.tolist()
+                        used_values += x
+                for i in quads:
+                    if ind in i[:,[0][0]]:
+                        x = i[:,[1][0]]
+                        x = x.tolist()
+                        used_values += x
+                possible_values = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9} - set(used_values)
+                possible_values = list(possible_values)
+
+                if (len(possible_values) > 0) and (len(possible_values) > counter):
+                    indexnums[ind][1] = possible_values[counter]
+                    counter_zero_list[ind] += 1
+ 
+                else:    
+                    write_bool = False
+                    counter_zero_list[ind] = 0
+                    previous_index = index_zero_list.index(ind) - 1
+                    position = index_zero_list[previous_index]
+                    indexnums[position][1] = 0
+
+                cols = get_cols_array(indexnums)
+                rows = get_rows_array(indexnums)
+                quads = get_quads_array(indexnums)
+    return indexnums
