@@ -14,18 +14,19 @@ st.write("""
 ## Upload an image with a sudoku and find the solution!
 """)
 
-st.write("Are you trying to solve a very difficult sudoku but you are stuck? You could give up...")
 st.write("""
-### DON'T DO IT !!!
+### Are you trying to solve a very difficult sudoku but you are stuck? You could give up...
+DON'T DO IT !!!
 """)
+
 st.write("""
 This is a sudoku solver, if you upload an image in .jpg or .png format,
 it will return the solution. Please, do not try to upload photos, as the scanner 
 is still under construction.
-
 """)
 
-sudoku = st.file_uploader("Upload a sudoku", type = ['jpg', 'png'])
+st.write("## Upload an image: ")
+sudoku = st.file_uploader("Select file", type = ['jpg', 'png'])
 if sudoku:
     st.write('Sudoku uploaded')
     img = Image.open(sudoku)
@@ -34,7 +35,6 @@ if sudoku:
 
 
 if st.button("Solve it!"):
-    st.write("Solving, wait for it...")
     img_path = "Sudoku_web.png"
     img = img.save(img_path)
     try:
@@ -46,7 +46,7 @@ if st.button("Solve it!"):
         for i in result:
             num = i[1]
             l.append(num)  
-        st.write("LEGENDARY! The solved sudoku:")    
+        st.write("## The solved sudoku:")    
         st.write(
                 f"""- - - - - - - - - - -
                 {l[0]} {l[1]} {l[2]} | {l[3]} {l[4]} {l[5]} | {l[6]} {l[7]} {l[8]}
