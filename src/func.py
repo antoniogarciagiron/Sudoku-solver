@@ -277,6 +277,15 @@ def get_rows(sudokulist):
 
 
 def get_rows_array(indexnums):
+    '''
+    Takes the list with the 81 sudoku numbers (0 if empty positions) and returns a list with each row in an array object
+
+    Args: 
+        Takes the list with the 81 sudoku numbers
+
+    Returns: 
+        An array with the numbers sorted by rows
+    '''
     row_list = np.reshape(indexnums, (9, 9, 2))
     return row_list
 
@@ -290,12 +299,21 @@ def get_cols(sudokulist):
 
     Returns: 
         A list with the numbers sorted by columns
-    '''  
+    '''
     columns = [sudokulist[i::9] for i in range(9)]    
     return columns
 
 
 def get_cols_array(final_list):    
+    '''
+    Takes the list with the 81 sudoku numbers (0 if empty positions) and returns a list with each column in an array
+
+    Args: 
+        Takes the list with the 81 sudoku numbers
+
+    Returns: 
+        An array with the numbers sorted by columns
+    '''  
     cols = np.reshape(final_list, (9, 9, 2))
     col_list = []
     for i in range(9):
@@ -328,6 +346,15 @@ def get_quads(sudokulist):
 
 
 def get_quads_array(final_list):     
+    '''
+    Takes the list with the 81 sudoku numbers (0 if empty positions) and returns a list with each quadrant in an array
+
+    Args: 
+        Takes the list with the 81 sudoku numbers
+
+    Returns: 
+        An array with the numbers sorted by quadrants
+    '''  
     quads = np.reshape(final_list, (9, 9, 2))
     quad_list = []
 
@@ -364,6 +391,15 @@ def sudoku_proofreader(rows, cols, quads):
 
 
 def sudoku_proofreader_arr(rows, cols, quads): 
+    '''
+    Takes the 3 arrays with numbers sorted by rows, quadrants and columns, and checks if there are not repeated numbers 
+
+    Args: 
+        3 lists, numbers sorted by rows, columns and quadrants
+
+    Returns: 
+        True if there are not repeated numbers in each row, column and quadrant, otherwise returns a False
+    ''' 
     OK = True
     for f in rows:
         if set(f[:,[1][0]]) != {1, 2, 3, 4, 5, 6, 7, 8, 9}:
@@ -418,6 +454,16 @@ def plot_sudoku(list_numbers):
 
 
 def numbers_with_index(final_list):
+    '''
+    Takes the the list of sudoku numbers and creates a list of lists where each element has the position (The ID of each number)
+    and the value 
+
+    Args: 
+        List of sudoku elements
+
+    Returns: 
+        List of lists with ID and value for each position
+    ''' 
     indexnums = []
     for num in range(81):
         indexnums.append([num, final_list[num]])
@@ -425,6 +471,15 @@ def numbers_with_index(final_list):
 
 
 def solver(final_list):
+    '''
+    Takes the the list of sudoku numbers (With 0s in the empty positions) and solves the sudoku
+
+    Args: 
+        Takes the the list of sudoku numbers
+
+    Returns: 
+        A list with the solved sudoku
+    ''' 
     indexnums = []
     for num in range(81):
         indexnums.append([num, final_list[num]])
